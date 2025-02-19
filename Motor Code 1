@@ -1,0 +1,123 @@
+// Motor Driver Pin Definitions
+#define M1INA 22  // Left motors direction A
+#define M1INB 24  // Left motors direction B
+#define M1EN 26   // Left motors enable pin
+#define M1PWM 4   // Left motors PWM speed control (changed from 2 to 4)
+
+#define M2INA 28  // Right motors direction A
+#define M2INB 30  // Right motors direction B
+#define M2EN 32   // Right motors enable pin
+#define M2PWM 5   // Right motors PWM speed control (changed from 3 to 5)
+
+// Motor speed (0 - 255 for PWM)
+const int motorSpeed = 50;  // Adjust this value to control the motor speed
+
+void setup() {
+  // Set motor control pins as output
+  pinMode(M1INA, OUTPUT);
+  pinMode(M1INB, OUTPUT);
+  pinMode(M1EN, OUTPUT);
+  pinMode(M1PWM, OUTPUT);
+
+  pinMode(M2INA, OUTPUT);
+  pinMode(M2INB, OUTPUT);
+  pinMode(M2EN, OUTPUT);
+  pinMode(M2PWM, OUTPUT);
+
+  // Stop motors initially
+  stopMotors();
+}
+
+void loop() {
+  // Move forward for 3 seconds
+  moveForward();
+  delay(3000);  // Move for 3 seconds
+  
+
+  // Turn left 90 degrees
+  turnLeft();
+  delay(3000);  // Adjust delay for a 90-degree turn
+  
+
+  // Move backward for 3 seconds
+  moveBackward();
+  delay(3000);  // Move for 3 seconds
+  
+
+  // Turn right 90 degrees
+  turnRight();
+  delay(3000);  // Adjust delay for a 90-degree turn
+  stopMotors();
+
+  // End loop (optional - prevent the sequence from repeating)
+  while (true);
+}
+
+// Function to move forward
+void moveForward() {
+  // Enable motors
+  digitalWrite(M1EN, HIGH);  // Enable left motors
+  digitalWrite(M2EN, HIGH);  // Enable right motors
+
+  // Set direction forward
+  digitalWrite(M1INA, HIGH);
+  digitalWrite(M1INB, LOW);
+  analogWrite(M1PWM, motorSpeed);  // Left motor speed
+
+  digitalWrite(M2INA, HIGH);
+  digitalWrite(M2INB, LOW);
+  analogWrite(M2PWM, motorSpeed);  // Right motor speed
+}
+
+// Function to move backward
+void moveBackward() {
+  digitalWrite(M1EN, HIGH);  // Enable left motors
+  digitalWrite(M2EN, HIGH);  // Enable right motors
+
+  // Set direction backward
+  digitalWrite(M1INA, LOW);
+  digitalWrite(M1INB, HIGH);
+  analogWrite(M1PWM, motorSpeed);  // Left motor speed
+
+  digitalWrite(M2INA, LOW);
+  digitalWrite(M2INB, HIGH);
+  analogWrite(M2PWM, motorSpeed);  // Right motor speed
+}
+
+// Function to turn left (pivot turn)
+void turnLeft() {
+  digitalWrite(M1EN, HIGH);  // Enable left motors
+  digitalWrite(M2EN, HIGH);  // Enable right motors
+
+  // Stop left motors, move right motors forward
+  digitalWrite(M1INA, HIGH);
+  digitalWrite(M1INB, LOW);
+  analogWrite(M1PWM, 50);  // Stop left motors
+
+  digitalWrite(M2INA, LOW);
+  digitalWrite(M2INB, HIGH);
+  analogWrite(M2PWM, motorSpeed);  // Right motors forward
+}
+
+// Function to turn right (pivot turn)
+void turnRight() {
+  digitalWrite(M1EN, HIGH);  // Enable left motors
+  digitalWrite(M2EN, HIGH);  // Enable right motors
+
+  // Move left motors forward, stop right motors
+  digitalWrite(M1INA, HIGH);
+  digitalWrite(M1INB, LOW);
+  analogWrite(M1PWM, motorSpeed);  // Left motors forward
+
+  digitalWrite(M2INA, LOW);
+  digitalWrite(M2INB, HIGH);
+  analogWrite(M2PWM, 50);  // Stop right motors
+}
+
+// Function to stop both motors
+void stopMotors() {
+  digitalWrite(M1EN, LOW);  // Disable left motors
+  digitalWrite(M2EN, LOW);  // Disable right motors
+  analogWrite(M1PWM, 0);
+  analogWrite(M2PWM, 0);
+}
